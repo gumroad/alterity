@@ -1,0 +1,34 @@
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
+
+Metrics/LineLength:
+  Max: 130
+  AllowHeredoc: true
+  AllowURI: true
+  IgnoreCopDirectives: true
+  Exclude:
+    - "spec/**/*"
+
+# This cop checks the line count inside blocks.
+# All RSpec code is in the same block for each file.
+# Enabling this for spec/ would require cutting up the spec files in several parts.
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: "double_quotes"
+
+# This cop checks for missing top-level documentation of classes and modules.
+# Classes with no body are exempt from the check and so are namespace modules -
+# modules that have nothing in their bodies except classes, other modules,
+# or constant definitions.
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 30
