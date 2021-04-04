@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require "english"
+require "rails"
 require "alterity/configuration"
 require "alterity/mysql_client_additions"
 require "alterity/railtie"
 
 class Alterity
   class << self
-    # mysql2 gem interface
     def process_sql_query(sql, &block)
       case sql.strip
       when /^alter table (?<table>.+?) (?<updates>.+)/i
@@ -36,7 +36,6 @@ class Alterity
 
     private
 
-    # TODO: test all kinds of queries, including FK related queries
     def execute_alter(table, updates)
       altered_table = table.delete("`")
       alter_argument = %("#{updates.gsub('"', '\\"').gsub('`', '\\\`')}")
