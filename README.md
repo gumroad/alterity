@@ -34,13 +34,13 @@ gem "alterity"
 ## Optional configuration
 
 1- You can configure the behavior in a `config/initializers/alterity.rb` file.
-The [default configuration can be found here](lib/alterity/default_configuration.rb).
 
 ```ruby
 Alterity.configure do |config|
   # You can fully customize the command that's will be executed:
   config.command = -> (config, altered_table, alter_argument) {
-    %(pt-online-schema-change
+    <<~SHELL.squish
+    pt-online-schema-change
       -h #{config.host}
       -P #{config.port}
       -u #{config.username}
@@ -54,10 +54,12 @@ Alterity.configure do |config|
       --execute
       --no-check-alter
       D=#{config.database},t=#{altered_table}
-      --alter #{alter_argument})
+      --alter #{alter_argument}
+    SHELL
   }
   # This option, deactivated by default, will set up a database & table and fill them with the listed DSNs before running migrations.
   # This is useful for PT-OSC (parameter `--recursion-method`) to monitor the replica lag while copying rows.
+  # This table will be truncated and re-filled every time you run migrations.
   config.replicas_dsns_table(
     database: "percona",
     table: "replicas_dsns",

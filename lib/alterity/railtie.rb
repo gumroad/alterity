@@ -15,12 +15,12 @@ module Alterity
           Alterity.after_running_migrations
         end
       end
-    end
 
-    unless ["1", "true"].include?(ENV["DISABLE_ALTERITY"])
-      ["migrate", "migrate:up", "migrate:down", "migrate:redo", "rollback"].each do |task|
-        Rake::Task["db:#{task}"].enhance(["alterity:intercept_table_alterations"]) do
-          Rake::Task["alterity:stop_intercepting_table_alterations"].invoke
+      unless ["1", "true"].include?(ENV["DISABLE_ALTERITY"])
+        ["migrate", "migrate:up", "migrate:down", "migrate:redo", "rollback"].each do |task|
+          Rake::Task["db:#{task}"].enhance(["alterity:intercept_table_alterations"]) do
+            Rake::Task["alterity:stop_intercepting_table_alterations"].invoke
+          end
         end
       end
     end
