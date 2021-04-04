@@ -1,48 +1,11 @@
 # frozen_string_literal: true
 
+require "alterity/configuration"
+require "alterity/mysql_client_additions"
 require "alterity/railtie"
 
 module Alterity
-  Configuration = Struct.new(
-    :command,
-    :host, :port, :database, :username, :password,
-    :replicas_dsns_database, :replicas_dsns_table, :replicas_dsns
-  )
-  CurrentState = Struct.new(:migrating, :disabled)
-
   class << self
-    # User facing features
-    def configure
-      yield self
-    end
-
-    def disable
-      @@state.disabled = true
-      yield
-    ensure
-      @@state.disabled = false
-    end
-
-    # User facing configurable
-    def command=(new_command)
-      @@config.command = new_command
-    end
-
-    def replicas_dsns_table(database:, table:, dsns:)
-      return ArgumentError.new("database & table must be present") if database.blank? || table.blank?
-
-      @@config.replicas_dsns_database = database
-      @@config.replicas_dsns_table = table
-      @@config.replicas_dsns = dsns.uniq.map do |dsn|
-        parts = dsn.split(",")
-        # automatically add default port
-        parts << "P=3306" unless parts.any? { |dsn| dsn.start_with?("P=") }
-        # automatically remove master
-        next if parts.include?("h=#{@@config.host}") && parts.include?("P=#{@@config.port}")
-        parts.join(",")
-      end.compact
-    end
-
     # mysql2 gem interface
     def process_sql_query(sql, &block)
       case sql.strip
@@ -68,30 +31,6 @@ module Alterity
 
     def after_running_migrations
       @@state.migrating = false
-    end
-
-    # accessors
-    def config
-      @@config
-    end
-
-    # utilities
-    def reset_state_and_configuration
-      @@config = Configuration.new
-      @@state = CurrentState.new
-
-      @@config.command = -> (config, altered_table, alter_argument) {
-        <<~SHELL.squish
-        pt-online-schema-change
-          -h #{config.host}
-          -P #{config.port}
-          -u #{config.username}
-          --password=#{config.password}
-          --execute
-          D=#{config.database},t=#{altered_table}
-          --alter #{alter_argument}
-        SHELL
-      }
     end
 
     private
@@ -139,10 +78,4 @@ module Alterity
   end
 
   reset_state_and_configuration
-
-  module Mysql2Additions
-    def query(sql, options = {})
-      Alterity.process_sql_query(sql) { super(sql, options) }
-    end
-  end
 end

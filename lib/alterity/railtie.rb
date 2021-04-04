@@ -8,7 +8,7 @@ module Alterity
       namespace :alterity do
         task :intercept_table_alterations do
           Alterity.before_running_migrations
-          ::Mysql2::Client.prepend(Alterity::Mysql2Additions)
+          ::Mysql2::Client.prepend(Alterity::MysqlClientAdditions)
         end
 
         task :stop_intercepting_table_alterations do
