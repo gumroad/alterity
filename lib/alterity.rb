@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "english"
+require "English"
 require "rails"
 require "alterity/configuration"
 require "alterity/mysql_client_additions"
