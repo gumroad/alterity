@@ -13,15 +13,14 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - '2.5'
-          - '2.6'
-          - '2.7'
+          # - '2.6'
+          # - '2.7'
           - '3.0'
-          - head
+          # - head
         rails:
-          - '6.0'
+          # - '6.0'
           - '6.1'
-          - head
+          # - head
     # continue-on-error: ${{ matrix.ruby == 'jruby' || matrix.ruby == 'head' || matrix.activerecord == 'head' }}
     name: Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }}
     services:
