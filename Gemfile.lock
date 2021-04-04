@@ -183,6 +183,7 @@ DEPENDENCIES
   alterity!
   bundler
   byebug
+  rails (>= 5)
   rake
   rspec
   rubocop!

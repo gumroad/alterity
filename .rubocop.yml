@@ -32,3 +32,9 @@ Style/Documentation:
 
 Metrics/MethodLength:
   Max: 30
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
