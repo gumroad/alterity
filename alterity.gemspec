@@ -29,6 +29,9 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "activerecord", ">= 6.1", "< 8"
-  spec.add_runtime_dependency "mysql2", "~> 0.5", ">= 0.5.3"
+  spec.add_development_dependency "rake", "~> 13.0"
+  spec.add_development_dependency "rspec", "~> 3.10"
+
+  spec.add_runtime_dependency "mysql2", ">= 0.3"
+  spec.add_runtime_dependency "rails", ">= 5"
 end

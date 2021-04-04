@@ -15,4 +15,8 @@ RSpec.configure do |config|
   end
 
   config.filter_run_when_matching :focus
+
+  config.before do
+    Alterity.reset_state_and_configuration
+  end
 end
