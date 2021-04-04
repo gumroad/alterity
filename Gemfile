@@ -9,7 +9,7 @@ gemspec
 
 gem "bundler"
 gem "byebug"
+gem "rails", ">= 5"
 gem "rake"
 gem "rspec"
 gem "rubocop", github: "rubocop-hq/rubocop"
-gem "rails", ">= 5"

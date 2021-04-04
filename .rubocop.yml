@@ -38,3 +38,10 @@ Metrics/AbcSize:
 
 Metrics/CyclomaticComplexity:
   Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Exclude:
+    - "spec/**/*"
