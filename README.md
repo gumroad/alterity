@@ -4,10 +4,10 @@ Alterity is a small utility that allows Rails app to run MySQL table alterations
 
 ## Usage
 
-By default, after adding the gem to the Gemfile, there's nothing to do to use it.
+By default, after adding the gem to the Gemfile, there's nothing to do to use it.  
 You can run your normal migrations via `rails db:migrate`, and where a table would have been ALTERed directly, `pt-online-schema-change` is invoked instead.  
 
-Example, running a migration with `add_column :users, :full_name, :string` would normally execute `ALTER TABLE users ADD COLUMN full_name VARCHAR(255)`.
+Example, running a migration with `add_column :users, :full_name, :string` would normally execute `ALTER TABLE users ADD COLUMN full_name VARCHAR(255)`.  
 With Alterity, the following will be executed instead: `pt-online-schema-change [config] D=[database],t=users --alter "ADD COLUMN full_name VARCHAR(255)"`.
 
 ## How does it work internally?
@@ -37,6 +37,7 @@ gem "alterity"
 
 ```ruby
 Alterity.configure do |config|
+  
   # You can fully customize the command that's will be executed:
   config.command = -> (config, altered_table, alter_argument) {
     <<~SHELL.squish
@@ -57,8 +58,11 @@ Alterity.configure do |config|
       --alter #{alter_argument}
     SHELL
   }
-  # This option, deactivated by default, will set up a database & table and fill them with the listed DSNs before running migrations.
-  # This is useful for PT-OSC (parameter `--recursion-method`) to monitor the replica lag while copying rows.
+
+  # This option, deactivated by default, will set up a database & table
+  # and fill them with the listed DSNs before running migrations.
+  # This is useful for PT-OSC (parameter `--recursion-method`) to monitor
+  # the replica lag while copying rows.
   # This table will be truncated and re-filled every time you run migrations.
   config.replicas_dsns_table(
     database: "percona",
