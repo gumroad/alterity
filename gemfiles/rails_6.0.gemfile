@@ -6,7 +6,7 @@ source "https://rubygems.org"
 gemspec path: "../"
 
 gem "mysql2", "~> 0.5"
-gem "rails", "~> 6.1.0"
+gem "rails", "~> 6.0.0"
 
 gem "bundler"
 gem "rake"

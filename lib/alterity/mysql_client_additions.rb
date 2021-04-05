@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "mysql2"
+
 class Alterity
   module MysqlClientAdditions
     def query(sql, options = {})
