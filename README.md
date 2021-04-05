@@ -90,8 +90,8 @@ end
 
 ## Requirements / Dependencies
 
-- Ruby >= 2  
-- Gem: Rails >= 5 (to be able to get the main database config via ActiveRecord, and enhance the migration Rake tasks via Railtie)
+- Ruby >= 2.7  
+- Gem: Rails >= 6.1 (to be able to get the main database config via ActiveRecord, and enhance the migration Rake tasks via Railtie)
 - Gem: `mysql2` >= 0.3  
 
 ## License
