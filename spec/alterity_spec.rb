@@ -9,8 +9,10 @@ RSpec.describe Alterity do
         ["CREATE INDEX `idx_users_on_col` ON `users` (col)", "`users`", "ADD INDEX `idx_users_on_col` (col)"],
         ["CREATE UNIQUE INDEX `idx_users_on_col` ON `users` (col)", "`users`", "ADD UNIQUE INDEX `idx_users_on_col` (col)"],
         ["DROP INDEX `idx_users_on_col` ON `users`", "`users`", "DROP INDEX `idx_users_on_col`"],
-        ["alter table users drop col", "users", "drop col"]
+        ["alter table users drop col", "users", "drop col"],
+        ["  ALTER TABLE\n   users\n   DROP col", "users", "DROP col"]
       ].each do |(query, expected_table, expected_updates)|
+        puts query.inspect
         expected_block = proc {}
         expect(expected_block).not_to receive(:call)
         expect(Alterity).to receive(:execute_alter).with(expected_table, expected_updates)

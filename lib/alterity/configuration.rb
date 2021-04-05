@@ -13,44 +13,34 @@ class Alterity
   class << self
     def reset_state_and_configuration
       self.config = Configuration.new
-      self.state = CurrentState.new
+      class << config
+        def replicas(database:, table:, dsns:)
+          return ArgumentError.new("database & table must be present") if database.blank? || table.blank?
 
-      config.command = lambda { |config, altered_table, alter_argument|
-        <<~SHELL.squish
-          pt-online-schema-change
-            -h #{config.host}
-            -P #{config.port}
-            -u #{config.username}
-            --password=#{config.password}
-            --execute
-            D=#{config.database},t=#{altered_table}
-            --alter #{alter_argument}
-        SHELL
-      }
+          self.replicas_dsns_database = database
+          self.replicas_dsns_table = table
+          self.replicas_dsns = dsns.uniq.map do |dsn|
+            parts = dsn.split(",")
+            # automatically add default port
+            parts << "P=3306" unless parts.any? { |part| part.start_with?("P=") }
+            # automatically remove master
+            next if parts.include?("h=#{host}") && parts.include?("P=#{port}")
+
+            parts.join(",")
+          end.compact
+        end
+      end
+
+      self.state = CurrentState.new
+      load "#{__dir__}/default_configuration.rb"
     end
 
     def configure
-      yield self
+      yield config
     end
 
     def command=(new_command)
       config.command = new_command
-    end
-
-    def replicas_dsns_table(database:, table:, dsns:)
-      return ArgumentError.new("database & table must be present") if database.blank? || table.blank?
-
-      config.replicas_dsns_database = database
-      config.replicas_dsns_table = table
-      config.replicas_dsns = dsns.uniq.map do |dsn|
-        parts = dsn.split(",")
-        # automatically add default port
-        parts << "P=3306" unless parts.any? { |part| part.start_with?("P=") }
-        # automatically remove master
-        next if parts.include?("h=#{config.host}") && parts.include?("P=#{config.port}")
-
-        parts.join(",")
-      end.compact
     end
 
     def disable

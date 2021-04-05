@@ -8,14 +8,14 @@ require "alterity/railtie"
 class Alterity
   class << self
     def process_sql_query(sql, &block)
-      case sql.strip
-      when /^alter table (?<table>.+?) (?<updates>.+)/i
+      case sql.tr("\n", " ").strip
+      when /^alter\s+table\s+(?<table>.+?)\s+(?<updates>.+)/i
         execute_alter($~[:table], $~[:updates])
-      when /^create index (?<index>.+?) on (?<table>.+?) (?<updates>.+)/i
+      when /^create\s+index\s+(?<index>.+?)\s+on\s+(?<table>.+?)\s+(?<updates>.+)/i
         execute_alter($~[:table], "ADD INDEX #{$~[:index]} #{$~[:updates]}")
-      when /^create unique index (?<index>.+?) on (?<table>.+?) (?<updates>.+)/i
+      when /^create\s+unique\s+index\s+(?<index>.+?)\s+on\s+(?<table>.+?)\s+(?<updates>.+)/i
         execute_alter($~[:table], "ADD UNIQUE INDEX #{$~[:index]} #{$~[:updates]}")
-      when /^drop index (?<index>.+?) on (?<table>.+)/i
+      when /^drop\s+index\s+(?<index>.+?)\s+on\s+(?<table>.+)/i
         execute_alter($~[:table], "DROP INDEX #{$~[:index]}")
       else
         block.call
@@ -38,9 +38,9 @@ class Alterity
     def execute_alter(table, updates)
       altered_table = table.delete("`")
       alter_argument = %("#{updates.gsub('"', '\\"').gsub('`', '\\\`')}")
-      prepared_command = config.command.call(config, altered_table, alter_argument).gsub(/\n/, "\\\n")
+      prepared_command = config.command.call(altered_table, alter_argument).to_s.gsub(/\n/, "\\\n")
       puts "[Alterity] Will execute: #{prepared_command}"
-      system(prepared_command)
+      system(prepared_command) || raise("[Alterity] Command failed")
     end
 
     def set_database_config
@@ -70,7 +70,7 @@ class Alterity
       return if config.replicas_dsns.empty?
 
       connection.execute <<~SQL
-        INSERT INTO #{table} (dsn)
+        INSERT INTO #{table} (dsn) VALUES
          #{config.replicas_dsns.map { |dsn| "('#{dsn}')" }.join(',')}
       SQL
     end
