@@ -15,3 +15,4 @@
 /*.gem
 
 /testapp
+Gemfile.lock
