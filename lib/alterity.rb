@@ -54,6 +54,10 @@ class Alterity
     def prepare_replicas_dsns_table
       return if config.replicas_dsns_table.blank?
 
+      dsns = config.replicas_dsns.dup
+      # Automatically remove master
+      dsns.reject! { |dsn| dsn.split(",").include?("h=#{config.host}") }
+
       database = config.replicas_dsns_database
       table = "#{database}.#{config.replicas_dsns_table}"
       connection = ActiveRecord::Base.connection
@@ -67,11 +71,11 @@ class Alterity
         ) ENGINE=InnoDB
       SQL
       connection.execute "TRUNCATE #{table}"
-      return if config.replicas_dsns.empty?
+      return if dsns.empty?
 
       connection.execute <<~SQL
         INSERT INTO #{table} (dsn) VALUES
-         #{config.replicas_dsns.map { |dsn| "('#{dsn}')" }.join(',')}
+         #{dsns.map { |dsn| "('#{dsn}')" }.join(',')}
       SQL
     end
   end

@@ -56,7 +56,7 @@ bundle e rails g migration add_color_to_shirts color:string
 
 # Test default configuration works as expected
 bundle e rails db:migrate --trace
-rails runner 'Shirt.columns.map(&:name).include?("color") || exit(1)'
+bundle e rails runner 'Shirt.columns.map(&:name).include?("color") || exit(1)'
 
 # Now test custom command and replication setup
 cp ../spec/bin/custom_config.rb config/initializers/alterity.rb
@@ -66,3 +66,6 @@ bundle e rails g migration add_color2_to_shirts color2:string
 bundle e rails db:migrate --trace
 
 ruby ../spec/bin/test_custom_config_result.rb
+
+# Also testing what's in replicas_dsns, also checking that master was detected and removed.
+bundle e rails runner 'res=ActiveRecord::Base.connection.execute("select dsn from percona.replicas_dsns").to_a.flatten;p(res); res == ["h=host1,P=3306", "h=host2,P=3306"] || exit(1)'
