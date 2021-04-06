@@ -23,9 +23,6 @@ class Alterity
             parts = dsn.split(",")
             # automatically add default port
             parts << "P=3306" unless parts.any? { |part| part.start_with?("P=") }
-            # automatically remove master
-            next if parts.include?("h=#{host}") && parts.include?("P=#{port}")
-
             parts.join(",")
           end.compact
         end

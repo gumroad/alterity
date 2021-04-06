@@ -2,7 +2,7 @@
 
 result = File.read("/tmp/custom_command_result.txt").downcase.strip
 
-expected_result = %({:host=>"127.0.0.1", :port=>nil, :username=>"root", :database=>"alterity_test", :replicas_dsns_database=>"percona", :replicas_dsns_table=>"replicas_dsns", :replicas_dsns=>["h=host1,P=3306", "h=host2,P=3306"]}
+expected_result = %({:host=>"127.0.0.1", :port=>nil, :username=>"root", :database=>"alterity_test", :replicas_dsns_database=>"percona", :replicas_dsns_table=>"replicas_dsns", :replicas_dsns=>["h=host1,P=3306", "h=host2,P=3306", "h=127.0.0.1,P=3306"]}
 shirts
 "ADD \\`color2\\` VARCHAR(255)").downcase.strip
 

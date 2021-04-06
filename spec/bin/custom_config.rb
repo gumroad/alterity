@@ -15,7 +15,12 @@ Alterity.configure do |config|
     table: "replicas_dsns",
     dsns: [
       "h=host1",
-      "h=host2"
+      "h=host2",
+      # we may encounter an app where the replica host is actually pointing to master;
+      # pt-osc doesn't deal well with this and will wait forever.
+      # So we're testing here that Alterity will detect that this is master (same as config.host),
+      # and will not insert it into the `replicas_dsns` table.
+      "h=#{ENV['MYSQL_HOST']}"
     ]
   )
 end
