@@ -12,8 +12,8 @@ class Alterity
       when /^alter\s+table\s+(?<table>.+?)\s+(?<updates>.+)/i
         table = $~[:table]
         updates = $~[:updates]
-        if updates.split(",").all? { |s| s =~ /^\s*drop\s+foreign\s+key\s+\w+\s*$/i } ||
-           updates.split(",").all? { |s| s =~ /^\s*add\s+constraint\s+`?\w+`?\s+foreign\s+key\s+\(`?\w+`?\)\s+references\s+`?\w+`?\s+\(`?\w+`?\)\s*$/i }
+        if updates.split(",").all? { |s| s =~ /^\s*drop\s+foreign\s+key/i } ||
+           updates.split(",").all? { |s| s =~ /^\s*add\s+constraint/i }
           block.call
         elsif updates =~ /drop\s+foreign\s+key/i || updates =~ /add\s+constraint/i
           # ADD CONSTRAINT / DROP FOREIGN KEY have to go to the original table,

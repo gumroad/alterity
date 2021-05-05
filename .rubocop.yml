@@ -5,12 +5,7 @@ AllCops:
     - "testapp/**/*"
 
 Metrics/LineLength:
-  Max: 130
-  AllowHeredoc: true
-  AllowURI: true
-  IgnoreCopDirectives: true
-  Exclude:
-    - "spec/**/*"
+  Enabled: false
 
 # This cop checks the line count inside blocks.
 # All RSpec code is in the same block for each file.
@@ -48,6 +43,12 @@ Style/BlockDelimiters:
   Enabled: false
 
 Style/SpecialGlobalVars:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
   Enabled: false
 
 Lint/EmptyBlock:

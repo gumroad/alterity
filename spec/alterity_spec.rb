@@ -10,7 +10,7 @@ RSpec.describe Alterity do
         ["CREATE UNIQUE INDEX `idx_users_on_col` ON `users` (col)", "`users`", "ADD UNIQUE INDEX `idx_users_on_col` (col)"],
         ["DROP INDEX `idx_users_on_col` ON `users`", "`users`", "DROP INDEX `idx_users_on_col`"],
         ["alter table users drop col", "users", "drop col"],
-        ["  ALTER TABLE\n   users\n   DROP col", "users", "DROP col"]
+        ["  ALTER TABLE\n   users\n   DROP col", "users", "DROP col"],
       ].each do |(query, expected_table, expected_updates)|
         puts query.inspect
         expected_block = proc {}
@@ -32,7 +32,8 @@ RSpec.describe Alterity do
         "SHOW FULL FIELDS FROM `users`",
         "ALTER TABLE `installment_events` DROP FOREIGN KEY _fk_rails_0123456789",
         "ALTER TABLE `installment_events` DROP FOREIGN KEY _fk_rails_0123456789, DROP FOREIGN KEY _fk_rails_9876543210",
-        "ALTER TABLE `installment_events` ADD CONSTRAINT `fk_rails_0cb5590091` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)"
+        "ALTER TABLE `installment_events` ADD CONSTRAINT `fk_rails_0cb5590091` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)",
+        "ALTER TABLE `installment_events` ADD CONSTRAINT `fk_rails_0cb5590091` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE",
       ].each do |query|
         expected_block = proc {}
         expect(expected_block).to receive(:call)
