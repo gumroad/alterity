@@ -10,7 +10,18 @@ class Alterity
     def process_sql_query(sql, &block)
       case sql.tr("\n", " ").strip
       when /^alter\s+table\s+(?<table>.+?)\s+(?<updates>.+)/i
-        execute_alter($~[:table], $~[:updates])
+        table = $~[:table]
+        updates = $~[:updates]
+        if updates.split(",").all? { |s| s =~ /^\s*drop\s+foreign\s+key\s+\w+\s*$/i } ||
+           updates.split(",").all? { |s| s =~ /^\s*add\s+constraint\s+`?\w+`?\s+foreign\s+key\s+\(`?\w+`?\)\s+references\s+`?\w+`?\s+\(`?\w+`?\)\s*$/i }
+          block.call
+        elsif updates =~ /drop\s+foreign\s+key/i || updates =~ /add\s+constraint/i
+          # ADD CONSTRAINT / DROP FOREIGN KEY have to go to the original table,
+          # other alterations need to got to the new table.
+          raise "[Alterity] Can't change a FK and do something else in the same query. Split it."
+        else
+          execute_alter(table, updates)
+        end
       when /^create\s+index\s+(?<index>.+?)\s+on\s+(?<table>.+?)\s+(?<updates>.+)/i
         execute_alter($~[:table], "ADD INDEX #{$~[:index]} #{$~[:updates]}")
       when /^create\s+unique\s+index\s+(?<index>.+?)\s+on\s+(?<table>.+?)\s+(?<updates>.+)/i
