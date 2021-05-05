@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.3.0 (2021-05-05)
+
+* Fix FKCs detection
+
 ## 1.2.0 (2021-05-05)
 
 * Add support for foreign key constraints changes
