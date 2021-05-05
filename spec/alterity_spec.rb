@@ -29,13 +29,30 @@ RSpec.describe Alterity do
         "SHOW CREATE TABLE `users`",
         "SHOW TABLE STATUS LIKE `users`",
         "SHOW KEYS FROM `users`",
-        "SHOW FULL FIELDS FROM `users`"
+        "SHOW FULL FIELDS FROM `users`",
+        "ALTER TABLE `installment_events` DROP FOREIGN KEY _fk_rails_0123456789",
+        "ALTER TABLE `installment_events` DROP FOREIGN KEY _fk_rails_0123456789, DROP FOREIGN KEY _fk_rails_9876543210",
+        "ALTER TABLE `installment_events` ADD CONSTRAINT `fk_rails_0cb5590091` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)"
       ].each do |query|
         expected_block = proc {}
         expect(expected_block).to receive(:call)
         expect(Alterity).not_to receive(:execute_alter)
         Alterity.process_sql_query(query, &expected_block)
       end
+    end
+
+    it "raises an error if mixing FK change and other things" do
+      expected_block = proc {}
+      expect(expected_block).not_to receive(:call)
+      expect(Alterity).not_to receive(:execute_alter)
+      query = "ALTER TABLE `installment_events` ADD `col` VARCHAR(255), DROP FOREIGN KEY _fk_rails_0123456789"
+      expect do
+        Alterity.process_sql_query(query, &expected_block)
+      end.to raise_error(/FK/)
+      query = "ALTER TABLE `installment_events` ADD `col` VARCHAR(255), ADD CONSTRAINT `fk_rails_0cb5590091` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)"
+      expect do
+        Alterity.process_sql_query(query, &expected_block)
+      end.to raise_error(/FK/)
     end
   end
 end

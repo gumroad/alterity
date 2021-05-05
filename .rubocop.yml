@@ -41,6 +41,12 @@ Metrics/AbcSize:
 Metrics/CyclomaticComplexity:
   Enabled: false
 
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Style/BlockDelimiters:
+  Enabled: false
+
 Style/SpecialGlobalVars:
   Enabled: false
 
