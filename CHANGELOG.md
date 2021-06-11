@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.3.1 (2021-06-12)
+
+* Include stderr and stdout in error message
+
 ## 1.3.0 (2021-05-05)
 
 * Fix FKCs detection
