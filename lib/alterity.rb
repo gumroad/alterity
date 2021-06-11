@@ -35,6 +35,7 @@ class Alterity
 
     # hooks
     def before_running_migrations
+      require "open3"
       state.migrating = true
       set_database_config
       prepare_replicas_dsns_table
@@ -51,7 +52,18 @@ class Alterity
       alter_argument = %("#{updates.gsub('"', '\\"').gsub('`', '\\\`')}")
       prepared_command = config.command.call(altered_table, alter_argument).to_s.gsub(/\n/, "\\\n")
       puts "[Alterity] Will execute: #{prepared_command}"
-      system(prepared_command) || raise("[Alterity] Command failed")
+
+      result_str = +""
+      exit_status = nil
+      Open3.popen2e(prepared_command) do |_stdin, stdout_and_stderr, wait_thr|
+        stdout_and_stderr.each do |line|
+          puts line
+          result_str << line
+        end
+        exit_status = wait_thr.value
+      end
+
+      raise("[Alterity] Command failed. Full output: #{result_str}") unless exit_status.success?
     end
 
     def set_database_config

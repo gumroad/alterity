@@ -46,7 +46,7 @@ Alterity.configure do |config|
       -P #{config.port}
       -u #{config.username}
       --password=#{config.password}
-      --alter-foreign-keys-method=drop_swap
+      --alter-foreign-keys-method=auto
       --nocheck-replication-filters
       --critical-load Threads_running=1000
       --max-load Threads_running=200
