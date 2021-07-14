@@ -4,7 +4,10 @@ class Alterity
   Configuration = Struct.new(
     :command,
     :host, :port, :database, :username, :password,
-    :replicas_dsns_database, :replicas_dsns_table, :replicas_dsns
+    :replicas_dsns_database, :replicas_dsns_table, :replicas_dsns,
+    :before_command,
+    :on_command_output,
+    :after_command
   )
   CurrentState = Struct.new(:migrating, :disabled)
   cattr_accessor :state
@@ -34,10 +37,6 @@ class Alterity
 
     def configure
       yield config
-    end
-
-    def command=(new_command)
-      config.command = new_command
     end
 
     def disable
