@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.4.0 (2021-07-14)
+
+* Add command callbacks
+
 ## 1.3.1 (2021-06-12)
 
 * Include stderr and stdout in error message
