@@ -15,6 +15,25 @@ puts result
 p result.chars.map(&:hex)
 
 if result != expected_result
-  puts "=> mismatch"
+  puts "=> mismatched result"
+  exit(1)
+end
+
+
+result = File.read("/tmp/before_command.txt")
+if result != "ls /"
+  puts "=> mismatched before_command"
+  exit(1)
+end
+
+result = File.read("/tmp/on_command_output.txt")
+if !result.include?("var")
+  puts "=> mismatched on_command_output"
+  exit(1)
+end
+
+result = File.read("/tmp/after_command.txt")
+if result.strip != "0"
+  puts "=> mismatched after_command"
   exit(1)
 end

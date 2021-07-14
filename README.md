@@ -74,6 +74,13 @@ Alterity.configure do |config|
       "h=#{ENV["DB_REPLICA2_HOST"]}",
     ]
   )
+
+  # You can set callbacks that run before, during and after a PT-OSC run.
+  # Useful if you need to have details of the migration logged somewhere specific.
+  # Examples:
+  config.before_command = ->(command) { Slack.send_message("#migrations", "Will execute: #{command}") }
+  config.on_command_output = ->(line) { Slack.send_message("#migrations", line) }
+  config.after_command = ->(exit_status) { Slack.send_message("#migrations", "Command exited with status: #{exit_status}") }
 end
 ```
 

@@ -8,6 +8,7 @@ Alterity.configure do |config|
     system("echo '#{string}' > /tmp/custom_command_result.txt")
     system("echo '#{altered_table}' >> /tmp/custom_command_result.txt")
     system("echo '#{alter_argument}' >> /tmp/custom_command_result.txt")
+    "ls /"
   }
 
   config.replicas(
@@ -23,4 +24,16 @@ Alterity.configure do |config|
       "h=#{ENV['MYSQL_HOST']}"
     ]
   )
+
+  config.before_command = lambda do |command|
+    File.new("/tmp/before_command.txt", "w").syswrite(command)
+  end
+
+  config.on_command_output = lambda do |output|
+    File.new("/tmp/on_command_output.txt", "w+").syswrite(output)
+  end
+
+  config.after_command = lambda do |exit_status|
+    File.new("/tmp/after_command.txt", "w").syswrite(exit_status)
+  end
 end
