@@ -8,6 +8,8 @@ require "alterity/railtie"
 class Alterity
   class << self
     def process_sql_query(sql, &block)
+      return block.call if state.disabled
+
       case sql.tr("\n", " ").strip
       when /^alter\s+table\s+(?<table>.+?)\s+(?<updates>.+)/i
         table = $~[:table]
