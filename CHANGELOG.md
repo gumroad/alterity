@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.4.1 (2021-07-28)
+
+* Fix disabled state. It had no effect before, now it does.
+
 ## 1.4.0 (2021-07-14)
 
 * Add command callbacks
