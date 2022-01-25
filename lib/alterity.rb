@@ -53,7 +53,7 @@ class Alterity
       altered_table = table.delete("`")
       alter_argument = %("#{updates.gsub('"', '\\"').gsub('`', '\\\`')}")
       prepared_command = config.command.call(altered_table, alter_argument).to_s.gsub(/\n/, "\\\n")
-      puts "[Alterity] Will execute: #{prepared_command}"
+      puts "[Alterity] Will execute: #{sanitize(prepared_command)}"
       config.before_command&.call(prepared_command)
 
       result_str = +""
@@ -69,6 +69,11 @@ class Alterity
       end
 
       raise("[Alterity] Command failed. Full output: #{result_str}") unless exit_status.success?
+    end
+
+    def sanitize(command)
+      return command unless config.password.present?
+      command.gsub(config.password, '[filtered]')
     end
 
     def set_database_config
