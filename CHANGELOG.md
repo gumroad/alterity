@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 1.4.2 (2022-01-25)
+
+* Filter password from console output (Tomas Brazys - deees)
+
 ## 1.4.1 (2021-07-28)
 
 * Fix disabled state. It had no effect before, now it does.
